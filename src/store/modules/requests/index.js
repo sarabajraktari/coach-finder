@@ -3,7 +3,7 @@ export default {
 
     state(){
         return{
-            requests:[]
+            requests: []
         }
     },
     mutations:{
@@ -24,6 +24,13 @@ export default {
         }
     },
     getters:{
-        
+        requests(state, _, _2, rootGetters){
+            const coachId = rootGetters.coachId;
+            console.log(state.requests);
+            return state.requests.filter(req => req.coachId === coachId);
+        },
+        hasRequests(_, getters){
+            return getters.requests && getters.requests.length > 0;
+        }
     }
 }
