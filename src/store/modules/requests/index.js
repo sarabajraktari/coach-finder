@@ -15,7 +15,7 @@ export default {
         contactCoach(context, payload){
             const newRequest = {
                 id: new Date().toISOString(),
-                coachId: payload.coachId,
+                coachId: payload.id,
                 userEmail: payload.email,
                 message: payload.message
             };
@@ -26,7 +26,6 @@ export default {
     getters:{
         requests(state, _, _2, rootGetters){
             const coachId = rootGetters.coachId;
-            console.log(state.requests);
             return state.requests.filter(req => req.coachId === coachId);
         },
         hasRequests(_, getters){
