@@ -27,12 +27,16 @@ export default{
     mutations:{
       registerCoach(state, payload){
         state.coaches.push(payload);
+      },
+      setCoaches(state, payload){
+        state.coaches = payload;
       }
     },
     actions:{
-      registerCoach(context, data){
+      // Register Coach
+      async registerCoach(context, data){
+        const coachId = context.rootGetters.coachId 
         const coachData= {
-          id: context.rootGetters.coachId,
           firstName: data.first,
           lastName: data.last,
           description: data.desc,
@@ -40,7 +44,52 @@ export default{
           areas: data.areas
         };
 
-        context.commit('registerCoach', coachData);
+        const response = await fetch(
+          `https://coach-finder-eeaea-default-rtdb.firebaseio.com/coaches/${coachId}.json`,
+          {
+            method: 'PUT',
+            body: JSON.stringify(coachData)
+          }
+        );
+
+
+        if(!response.ok){
+          // error ...
+          console.error("Failed to register coach");
+          throw new Error('Failed to register coach');
+        }
+        context.commit('registerCoach', {
+          ...coachData,
+          id: coachId
+        });
+      },
+
+      // Fetch coaches
+      async loadCoaches(context){
+        const response = await fetch(
+          'https://coach-finder-eeaea-default-rtdb.firebaseio.com/coaches.json'
+        );
+        
+        const responseData = await response.json();
+
+        if(!response.ok){
+            const error = new Error(responseData.message || 'Failed to fetch');
+            throw error;
+        }
+
+        const coaches =[];
+        for(const key in responseData){
+          const coach ={
+            id: key,
+            firstName: responseData[key].firstName,
+            lastName: responseData[key].lastName,
+            description: responseData[key].description,
+            hourlyRate: responseData[key].hourlyRate,
+            areas: responseData[key].areas
+          }
+          coaches.push(coach);
+        }
+        context.commit('setCoaches', coaches);
       }
     },
     getters:{
