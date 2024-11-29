@@ -34,7 +34,8 @@ export default {
             context.commit('addRequest', newRequest);
         },
         async fetchRequests(context){
-            const coachId = context.rootGetters.coachId;
+            const coachId = context.rootGetters.userId;
+            console.log(coachId);
             const response = await fetch(`https://coach-finder-eeaea-default-rtdb.firebaseio.com/requests/${coachId}.json`);
             const responseData = await response.json();
 
