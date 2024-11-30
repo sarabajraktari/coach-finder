@@ -35,10 +35,9 @@ export default {
         },
         async fetchRequests(context){
             const coachId = context.rootGetters.userId;
-            console.log(coachId);
-            const response = await fetch(`https://coach-finder-eeaea-default-rtdb.firebaseio.com/requests/${coachId}.json`);
+            const token = context.rootGetters.token;
+            const response = await fetch(`https://coach-finder-eeaea-default-rtdb.firebaseio.com/requests/${coachId}.json?auth=` + token);
             const responseData = await response.json();
-
             if(!response.ok){
                 const error = new Error(responseData.message || 'Failed to fetch requests');
                 throw error;
@@ -62,7 +61,7 @@ export default {
     },
     getters:{
         requests(state, _, _2, rootGetters){
-            const coachId = rootGetters.coachId;
+            const coachId = rootGetters.userId;
             return state.requests.filter(req => req.coachId === coachId);
         },
         hasRequests(_, getters){

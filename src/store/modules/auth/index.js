@@ -2,9 +2,9 @@ let timer;
 export default {
     state(){
         return {
-            userId: Date.now() + Math.floor(Math.random() * 1000),
+            userId: null,
             token: null,
-            didAutoLogout: false,
+            didAutoLogout: false
         }
     },
     mutations: {
@@ -31,8 +31,8 @@ export default {
             })
         },
        async auth(context, payload){
-            let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAksozxqk_pnBX-eVWgNYiERZZiBvAfmoE';
             const mode = payload.mode;
+            let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAksozxqk_pnBX-eVWgNYiERZZiBvAfmoE';
 
             if(mode === 'signup'){
                 url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAksozxqk_pnBX-eVWgNYiERZZiBvAfmoE';
@@ -79,7 +79,7 @@ export default {
                 return;
             }
             
-            setTimeout(function(){
+            timer = setTimeout(function(){
                 context.dispatch('autoLogout');
 
             },expiresIn)
@@ -110,13 +110,13 @@ export default {
     },
     getters: {
         isAuthenticated(state){
-            return state.token;
+            return !!state.token; //added double ! to make it boolean type
         },
         userId(state) {
             return state.userId;
         },
         token(state){
-            return !!state.token; //added double ! to make it boolean type
+            return state.token;
         },
         didAutoLogout(state){
             return state.didAutoLogout;

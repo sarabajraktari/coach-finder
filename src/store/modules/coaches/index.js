@@ -1,8 +1,10 @@
+
 export default{
     namespaced:true,
     state(){
         return {
-            coaches:[],
+          lastFetch: null,
+          coaches: [],
         }
     },
     mutations:{
@@ -19,7 +21,6 @@ export default{
     actions:{
       async registerCoach(context, data) {
         const userId = context.rootGetters.userId;
-        console.log(userId);
         const coachData = {
           firstName: data.first,
           lastName: data.last,
@@ -27,9 +28,11 @@ export default{
           hourlyRate: data.rate,
           areas: data.areas
         };
+    
         const token = context.rootGetters.token;
         const response = await fetch(
-          `https://coach-finder-eeaea-default-rtdb.firebaseio.com/coaches/${userId}.json?auth=` + token,
+             `https://coach-finder-eeaea-default-rtdb.firebaseio.com/coaches/${userId}.json?auth=` +
+            token,
           {
             method: 'PUT',
             body: JSON.stringify(coachData)
